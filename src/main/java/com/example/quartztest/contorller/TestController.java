@@ -4,9 +4,14 @@ import com.example.quartztest.entity.QuartzJobEntity;
 import com.example.quartztest.job.Test1Job;
 import com.example.quartztest.job.TestJob;
 import com.example.quartztest.service.TestService;
+import org.apache.ibatis.annotations.Mapper;
+import org.quartz.JobDataMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class TestController {
@@ -32,6 +37,9 @@ public class TestController {
         entity.setJobGroup("17");
         entity.setJobClass(Test1Job.class);//业务实现类
         entity.setCron("*/10 * * * * ?");
+        JobDataMap map = new JobDataMap();
+        map.put("id","1");
+        entity.setJobDataMap(map);
         testService.addJob(entity);
         return "成功";
     }

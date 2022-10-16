@@ -1,6 +1,8 @@
 package com.example.quartztest.config;
 
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -15,6 +17,9 @@ public class QuartzConfig {
     // 配置文件路径
     @Resource
     private DataSource dataSource;
+
+    @Autowired
+    private CustomJobFactory customJobFactory;
 
     /**
      *  调度器
@@ -40,7 +45,10 @@ public class QuartzConfig {
     }
 
     @Bean
-    public Scheduler scheduler(SchedulerFactoryBean schedulerFactoryBean) {
-        return schedulerFactoryBean.getScheduler();
+    public Scheduler scheduler(SchedulerFactoryBean schedulerFactoryBean) throws SchedulerException {
+        Scheduler scheduler = schedulerFactoryBean.getScheduler();
+        scheduler.setJobFactory(customJobFactory);
+        scheduler.start();
+        return scheduler;
     }
 }
